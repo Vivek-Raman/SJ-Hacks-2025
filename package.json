@@ -1,0 +1,27 @@
+{
+  "name": "SJ-Hacks-41",
+  "version": "1.0-rc1",
+  "type": "module",
+  "bin": {
+    "mcp-server-sj-watch": "dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "npm run build && node dist/main.js",
+    "dev": "tsc && (tsc --watch & node --watch dist/main.js)"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "express": "^5.1.0",
+    "express-cors": "^0.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22",
+    "typescript": "^5.6.2"
+  }
+}

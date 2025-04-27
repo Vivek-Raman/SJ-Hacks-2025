@@ -5,6 +5,6 @@ services:
       context: .
     develop:
       watch:
-        - path: ./main.py
-          target: /app/main.py
-          action: sync+restart
+        - path: ./
+          target: /app
+          action: rebuild

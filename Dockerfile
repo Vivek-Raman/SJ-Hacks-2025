@@ -1,29 +1,25 @@
-# Source: https://github.com/modelcontextprotocol/servers/blob/main/src/fetch/Dockerfile
-
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
+FROM node:22.12-alpine AS builder
 
 WORKDIR /app
 
-ENV UV_COMPILE_BYTECODE=1
-ENV UV_LINK_MODE=copy
+COPY package*.json ./
+COPY tsconfig.json ./
 
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev --no-editable
+RUN --mount=type=cache,target=/root/.npm npm install
 
-ADD . /app
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev --no-editable
+COPY . .
+RUN npm run build
 
-FROM python:3.12-slim-bookworm
+FROM node:23-alpine AS release
 
 WORKDIR /app
 
-COPY --from=uv /root/.local /root/.local
-COPY --from=uv --chown=app:app /app/.venv /app/.venv
-COPY ./main.py /app
+COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/package-lock.json /app/package-lock.json
 
-ENV PATH="/app/.venv/bin:$PATH"
+ENV NODE_ENV=production
 
-ENTRYPOINT ["mcp", "run", "main.py"]
+RUN npm ci --ignore-scripts --omit-dev
+
+ENTRYPOINT ["node", "dist/main.js"]
