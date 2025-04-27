@@ -1,5 +1,5 @@
 [project]
-name = "sj-hacks-2025"
+name = "sj-watch"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,3 +7,6 @@ requires-python = ">=3.10"
 dependencies = [
     "mcp[cli]>=1.6.0",
 ]
+
+[project.scripts]
+mcp-server-sj-watch = "main"

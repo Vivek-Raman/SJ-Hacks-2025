@@ -1,0 +1,10 @@
+services:
+  mcp-server:
+    container_name: sj-watch
+    build:
+      context: .
+    develop:
+      watch:
+        - path: ./main.py
+          target: /app/main.py
+          action: sync+restart
